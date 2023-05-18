@@ -16,6 +16,10 @@ public interface IEarFileService {
     String getUNZip2Path(Long sessionID);
     String getResultPath(Long sessionID);
 
+    File convert(MultipartFile multipartFile, String path) throws IOException;
+
+    String getUnzipScript(Long sessionID);
+
     public void initWorkingFolders(String sessionID);
     public void clearWorkingFolder(String sessionID) throws IOException;
 

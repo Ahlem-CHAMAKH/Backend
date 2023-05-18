@@ -1,6 +1,8 @@
 package com.example.megaragolive.controller;
 
 import com.example.megaragolive.entity.Folder;
+import com.example.megaragolive.entity.ScriptTransformationHistory;
+import com.example.megaragolive.entity.TransformationParameters;
 import com.example.megaragolive.service.FileService;
 import com.example.megaragolive.service.FileComparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,29 +16,27 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.zip.ZipFile;
 
 @CrossOrigin(origins = { "*" })
 @RestController
-@RequestMapping("/Comparator")
-public class EarComparatorController {
+@RequestMapping("/ScriptTransformer")
+public class ScriptTransformerController {
     @Autowired
     FileComparator ecs;
     @Autowired
     FileService es;
 
-    @PostMapping("/result")
-    public ResponseEntity<Folder> getComparisonRESULT(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2){
-        Long token= null;
-        try {
-        token = es.uploadAndExtract2Files(file1,file2);
-        Folder folder=ecs.compare(new File(es.getUNZip1Path(token)),new File(es.getUNZip2Path(token)));
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            return new ResponseEntity<Folder>(folder, headers, HttpStatus.OK);
-        } catch (IOException e) {
-            return null;
+    @PostMapping(name = "/result",produces = { "application/octet-stream" })
+    public ResponseEntity<ZipFile> getResult(@RequestParam("file") MultipartFile file1, @RequestParam("TransformationParameters") TransformationParameters tp) throws IOException {
+        ScriptTransformationHistory transformationHistory=new ScriptTransformationHistory();
+        transformationHistory.setHistoryUSER(tp.getHistoryUSER());
+        transformationHistory.setDataSourceUSER(tp.getDataSourceUSER());
+        transformationHistory.setDbName(tp.getDbName());
+        transformationHistory.setSourceScript(es.convert(file1,es.getUnzipScript(transformationHistory.getId())));
+
+        return new ResponseEntity<ScriptTransformationHistory>(folder, headers, HttpStatus.OK);
         }
-    }
 
 
     public ArrayList<Folder> getModifiedFiles(MultipartFile file1, MultipartFile file2) {

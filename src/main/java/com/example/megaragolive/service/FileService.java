@@ -19,7 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import  static com.example.megaragolive.util.MegaGoLiveConstants.*;
 @Service
-public class EarFileService implements IEarFileService{
+public class FileService implements IEarFileService{
     private MultipartFile file;
 
     private String destDir;
@@ -49,6 +49,16 @@ public class EarFileService implements IEarFileService{
     @Override
     public String getUNZip1Path(Long sessionID){
         return em.getExtractionPath()+File.separator+sessionID+File.separator+UNZIP1;
+    }
+    @Override
+    public File convert(MultipartFile multipartFile, String path) throws IOException {
+        File file = new File(path); // Replace with your desired file path
+        multipartFile.transferTo(file);
+        return file;
+    }
+    @Override
+    public String getUnzipScript(Long sessionID){
+        return em.getExtractionPath()+File.separator+sessionID+File.separator+UNZIP;
     }
     @Override
     public void initWorkingFolders(String sessionID) {

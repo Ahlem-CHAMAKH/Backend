@@ -49,7 +49,7 @@ public class PathWalker {
             node = node.getChild(name);
     }
     public Folder showTree() throws IOException {
-        Folder folder=new Folder("",new ArrayList<Folder>(),true,this.pathStatus);
+        Folder folder=new Folder(0,"","",new ArrayList<Folder>(),true,this.pathStatus);
         printTree(folder,root);
         return folder;
     }
@@ -59,25 +59,25 @@ public class PathWalker {
             return;
         List<Folder> childs=new ArrayList<>();
         for (Map.Entry<String, Node> child : children.entrySet()) {
-            Folder subFolder  = new Folder(child.getKey(), new ArrayList<Folder>(),true,this.pathStatus);
+            Folder subFolder  = new Folder(0,child.getKey(),child.getKey(), new ArrayList<Folder>(),true,this.pathStatus);
             printTree(subFolder,child.getValue());
             childs.add(subFolder);
         }
         folder.setChildren((ArrayList<Folder>) childs);
     }
 
-   public static Folder getFolderTree(String path) throws IOException {
+   public static Folder getFolderTree(String path, int level) throws IOException {
         File file=new File(path);
         ArrayList<Folder> folderArrayList=new ArrayList<Folder>();
-        Folder folder=new Folder(path,folderArrayList,(file.listFiles()!=null && file.listFiles().length>0), file);
+        Folder folder=new Folder(level,file.getName(),folderArrayList,(file.listFiles()!=null && file.listFiles().length>0),path, file);
         if(file.isDirectory()){
             for(File f:file.listFiles()){
                 if(!f.isDirectory()) {
-                    Folder f2 = new Folder(f.getAbsolutePath() ,null, false, f);
+                    Folder f2 = new Folder(level+1,f.getName() ,null, false,f.getAbsolutePath(), f);
                     folderArrayList.add(f2);
                 }
                 else{
-                    folderArrayList.add(getFolderTree(f.getAbsolutePath()));
+                    folderArrayList.add(getFolderTree(f.getAbsolutePath(),level+1));
                 }
             }
             folder.setChildren(folderArrayList);
