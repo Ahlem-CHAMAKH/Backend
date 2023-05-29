@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public interface IEarFileService {
     String getZip1Path(Long sessionID);
@@ -18,14 +19,19 @@ public interface IEarFileService {
 
     File convert(MultipartFile multipartFile, String path) throws IOException;
 
-    String getUnzipScript(Long sessionID);
+
+    String getUnzipDirectory(Long sessionID);
+
+    String getFormattingDirectoy(Long sessionID);
+
+    String getZippingDirectory(Long sessionID);
 
     public void initWorkingFolders(String sessionID);
     public void clearWorkingFolder(String sessionID) throws IOException;
 
     void synchronizeFilesToken(FilesToken fIt);
 
-    public File convertMultipartFileToFile(MultipartFile multipartFile);
+    public File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException;
 
     String getExtension(File file);
 
@@ -44,4 +50,6 @@ public interface IEarFileService {
 
     public void decompileManyJars(String sourceFolder, String targetFolder) throws IOException;
     public void decompileOneClass(File classFile,String targetFolder) throws IOException;
+
+    void zipFolder(String sourceFolder, ZipOutputStream zos) throws IOException;
 }

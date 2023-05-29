@@ -8,6 +8,7 @@ import org.benf.cfr.reader.api.CfrDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -17,6 +18,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import  static com.example.megaragolive.util.MegaGoLiveConstants.*;
 @Service
 public class FileService implements IEarFileService{
@@ -42,6 +45,15 @@ public class FileService implements IEarFileService{
     public String getResultPath(Long sessionID){
         return em.getExtractionPath()+File.separator+sessionID+File.separator+RESULT;
     }
+
+    @Override
+    public File convert(MultipartFile multipartFile, String path) throws IOException {
+        File file = new File(multipartFile.getOriginalFilename());
+        FileCopyUtils.copy(multipartFile.getBytes(),file);
+        //copyInputStreamToFile(multipartFile.getInputStream(), file);
+        return file;
+    }
+
     @Override
     public String getUNZip2Path(Long sessionID){
         return em.getExtractionPath()+File.separator+sessionID+File.separator+UNZIP2;
@@ -50,15 +62,19 @@ public class FileService implements IEarFileService{
     public String getUNZip1Path(Long sessionID){
         return em.getExtractionPath()+File.separator+sessionID+File.separator+UNZIP1;
     }
+
     @Override
-    public File convert(MultipartFile multipartFile, String path) throws IOException {
-        File file = new File(path); // Replace with your desired file path
-        multipartFile.transferTo(file);
-        return file;
+    public String getUnzipDirectory(Long sessionID){
+        return em.getExtractionPath()+File.separator+sessionID+File.separator+UNZIP;
     }
     @Override
-    public String getUnzipScript(Long sessionID){
-        return em.getExtractionPath()+File.separator+sessionID+File.separator+UNZIP;
+    public String getFormattingDirectoy(Long sessionID){
+        return em.getExtractionPath()+File.separator+sessionID+File.separator+FORMATED;
+    }
+    @Override
+    public String getZippingDirectory(Long sessionID){
+        return em.getExtractionPath()+File.separator+sessionID+File.separator+ZIPPED;
+
     }
     @Override
     public void initWorkingFolders(String sessionID) {
@@ -79,8 +95,11 @@ public class FileService implements IEarFileService{
      ft.saveAndFlush(fIt);
     }
     @Override
-    public File convertMultipartFileToFile(MultipartFile multipartFile) {
-        return null;
+    public File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+        File file = new File(multipartFile.getOriginalFilename());
+        FileCopyUtils.copy(multipartFile.getBytes(),file);
+        //copyInputStreamToFile(multipartFile.getInputStream(), file);
+        return file;
     }
     @Override
     public String getExtension(File file) {
@@ -239,6 +258,87 @@ public class FileService implements IEarFileService{
                 .build();
         // Décompiler le fichier
         driver.analyse(Arrays.asList(fileToDecompile.getAbsolutePath()));
+    }
+
+
+    @Override
+    public void zipFolder(String sourceFolder, ZipOutputStream zos) throws IOException {
+        File folder = new File(sourceFolder);
+        File[] files = folder.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                // Recursively zip sub-folders
+                zipFolder(file.getAbsolutePath(), zos);
+            } else {
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = new FileInputStream(file);
+
+
+                // Add zip entry for the file
+                zos.putNextEntry(new ZipEntry(file.getName()));
+
+                int length;
+                while ((length = fis.read(buffer)) > 0) {
+                    // Write the file content to the zip output stream
+                    zos.write(buffer, 0, length);
+                }
+
+                fis.close();
+            }
+        }
+    }
+
+
+    /**
+     * This method populates all the files in a directory to a List
+     * @param dir
+     * @throws IOException
+     */
+    private static ArrayList<String> populateFilesList(File dir) throws IOException {
+        ArrayList<String> filesListInDir=new ArrayList<String>();
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) filesListInDir.add(file.getAbsolutePath());
+                else filesListInDir.addAll(populateFilesList(file));
+            }
+        }
+        return  filesListInDir;
+    }
+
+    /**
+     * This method compresses the single file to zip format
+     * @param file
+     * @param zipFileName
+     */
+    private  void zipSingleFile(File file, String zipFileName) {
+        try {
+            //create ZipOutputStream to write to the zip file
+            FileOutputStream fos = new FileOutputStream(zipFileName);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+            //add a new Zip Entry to the ZipOutputStream
+            ZipEntry ze = new ZipEntry(file.getName());
+            zos.putNextEntry(ze);
+            //read the file and write to ZipOutputStream
+            FileInputStream fis = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) > 0) {
+                zos.write(buffer, 0, len);
+            }
+
+            //Close the zip entry to write to zip file
+            zos.closeEntry();
+            //Close resources
+            zos.close();
+            fis.close();
+            fos.close();
+            System.out.println(file.getCanonicalPath()+" is zipped to "+zipFileName);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

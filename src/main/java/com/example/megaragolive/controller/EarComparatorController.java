@@ -1,8 +1,11 @@
 package com.example.megaragolive.controller;
 
 import com.example.megaragolive.entity.Folder;
+import com.example.megaragolive.entity.STransformationParameters;
+import com.example.megaragolive.entity.ScriptTransformation;
 import com.example.megaragolive.service.FileService;
 import com.example.megaragolive.service.FileComparator;
+import com.example.megaragolive.service.ScriptTransformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,12 @@ public class EarComparatorController {
     FileComparator ecs;
     @Autowired
     FileService es;
+    @Autowired
+    ScriptTransformationService st;
+    @GetMapping(name="/j")
+    public String get(){
+        return "he";
+    }
 
     @PostMapping("/result")
     public ResponseEntity<Folder> getComparisonRESULT(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2){
