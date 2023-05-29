@@ -3,6 +3,7 @@ package com.example.megaragolive.entity;
 import jakarta.persistence.*;
 
 import java.io.File;
+import java.util.Date;
 
 @Table
 @Entity
@@ -15,6 +16,53 @@ public class ResultatSimulation {
     private File script;
     @OneToOne
      private   ParametreSimulation ps;
+    private Date dateDeSimulation;
+    private Status status;
+    private Boolean withError;
+
+    public enum Status{
+    Validé, Rejeté, Rien
+}
+
+    public Boolean getWithError() {
+        return withError;
+    }
+
+    public void setWithError(Boolean withError) {
+        this.withError = withError;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ResultatSimulation(String rapport, File script, ParametreSimulation ps, Date dateDeSimulation, Status status) {
+        this.rapport = rapport;
+        this.script = script;
+        this.ps = ps;
+        this.dateDeSimulation = dateDeSimulation;
+        this.status = status;
+    }
+
+    public Date getDateDeSimulation() {
+        return dateDeSimulation;
+    }
+
+    public void setDateDeSimulation(Date dateDeSimulation) {
+        this.dateDeSimulation = dateDeSimulation;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public ResultatSimulation(File script, ParametreSimulation ps) {
         this.script = script;

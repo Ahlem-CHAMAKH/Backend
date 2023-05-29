@@ -2,16 +2,15 @@ package com.example.megaragolive.service;
 
 import com.example.megaragolive.entity.ParametreSimulation;
 import com.example.megaragolive.entity.ResultatSimulation;
+import com.nimbusds.jwt.util.DateUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.util.Date;
 
 @Service
 public class ScriptSimulationService {
@@ -33,14 +32,24 @@ public class ScriptSimulationService {
             //Initialize the script runner
             ScriptRunner sr = new ScriptRunner(con);
             //Creating a reader object
+            sr.setStopOnError(true);
+         //   sr.setErrorLogWriter(new PrintWrit);
             Reader reader = new BufferedReader(new FileReader(file));
             //Running the script
             sr.runScript(reader);
             rs.setRapport(new String("SQL SCRIPT EXECUTED SUCCESSFULLY!"));
         }
-        catch (Exception e){
-            rs.setRapport("ERROR:"+e.getLocalizedMessage());
+        catch (RuntimeException e){
+            rs.setRapport(e.getMessage());
+            rs.setWithError(Boolean.TRUE);
+
         }
+        catch (Exception e){
+            rs.setRapport(e.getMessage());
+            rs.setWithError(Boolean.TRUE);
+
+        }
+        rs.setDateDeSimulation(new Date());
         return rs;
     }
 }
