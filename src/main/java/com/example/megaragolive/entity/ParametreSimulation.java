@@ -1,13 +1,15 @@
 package com.example.megaragolive.entity;
 
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 @Table
 @Entity
 public class ParametreSimulation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE3")
+    @SequenceGenerator(name="SEQUENCE3", sequenceName="SEQUENCE3", allocationSize=1)
     private Long id;
 
 

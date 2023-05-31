@@ -1,6 +1,6 @@
 package com.example.megaragolive.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.io.File;
 
@@ -10,7 +10,8 @@ public class ScriptTransformation {
 
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE4")
+    @SequenceGenerator(name="SEQUENCE4", sequenceName="SEQUENCE4", allocationSize=1)
     private long id;
 
     enum Status{

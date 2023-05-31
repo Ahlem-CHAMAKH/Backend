@@ -1,16 +1,19 @@
 package com.example.megaragolive.entity;
-import jakarta.persistence.*;
 
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name="Utilisateur")
 public class Utilisateur {
     @Id
-    private String cin;
+    private String email;
 
     private String nom;
     private String prenom;
-    private String email;
+    private String cin;
     private Role role;
 
 

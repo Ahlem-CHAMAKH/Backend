@@ -1,6 +1,5 @@
 package com.example.megaragolive.entity;
 
-import jakarta.persistence.Entity;
 
 import java.io.File;
 

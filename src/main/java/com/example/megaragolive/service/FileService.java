@@ -1,6 +1,5 @@
 package com.example.megaragolive.service;
 
-import com.example.megaragolive.EntityManager;
 import com.example.megaragolive.entity.FilesToken;
 import com.example.megaragolive.repository.FileTokenJPA;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -92,7 +91,7 @@ public class FileService implements IEarFileService{
     }
     @Override
     public void synchronizeFilesToken(FilesToken fIt){
-     ft.saveAndFlush(fIt);
+     ft.save(fIt);
     }
     @Override
     public File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {

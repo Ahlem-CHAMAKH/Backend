@@ -4,6 +4,7 @@ package com.example.megaragolive.service;
 import com.example.megaragolive.entity.Utilisateur;
 import com.example.megaragolive.repository.UtilisateurJPA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,14 +13,18 @@ import java.util.ArrayList;
 public class UtilisateurService implements IUtilisateurService {
     @Autowired
     UtilisateurJPA j;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) {
+       utilisateur.setPassword(passwordEncoder.encode(utilisateur.getPassword()));
        return j.save(utilisateur);
     }
 
     @Override
     public Utilisateur modifier(Utilisateur utilisateur) {
-        Utilisateur u=j.getReferenceById(utilisateur.getCin());
+        Utilisateur u=j.getOne(utilisateur.getEmail());
         if(u!=null){
             u.setNom(utilisateur.getNom());
             u.setEmail(utilisateur.getEmail());
@@ -39,8 +44,8 @@ public class UtilisateurService implements IUtilisateurService {
     }
 
     @Override
-    public Utilisateur getUtilisateur(String cin) {
-        return j.getReferenceById(cin);
+    public Utilisateur getUtilisateur(String email) {
+        return j.getOne(email);
     }
 
     @Override

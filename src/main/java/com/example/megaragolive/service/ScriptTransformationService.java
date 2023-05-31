@@ -74,9 +74,9 @@ public class ScriptTransformationService {
             boolean test_12_13 = generateOdds(user2_role,historyDataSource,
                    outputDir, "12.sql", "13.sql");
             setContextBooleans(test_02_03, test_12_13);
-            generateExtra("lanzador_"+user1+".sql",
+            generateExtra("lanzador_"+user1_role+".sql",
                    outputDir, "cmp");
-            generateExtra("lanzador_"+user2+".sql",
+            generateExtra("lanzador_"+user2_role+".sql",
                    outputDir, "audit");
             generateExtra("lanzador_system.sql",
                    outputDir, "system");

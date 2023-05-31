@@ -1,6 +1,6 @@
 package com.example.megaragolive.controller;
 
-import com.example.megaragolive.EntityManager;
+import com.example.megaragolive.service.EntityManager;
 import com.example.megaragolive.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
