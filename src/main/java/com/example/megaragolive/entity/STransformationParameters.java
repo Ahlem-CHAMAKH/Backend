@@ -1,14 +1,13 @@
 package com.example.megaragolive.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="STransformationParameters")
 public class STransformationParameters {
     @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE5")
+    @SequenceGenerator(name="SEQUENCE5", sequenceName="SEQUENCE5", allocationSize=1)
     private Long id;
     private String dbName;
     private String url;
@@ -29,6 +28,11 @@ public class STransformationParameters {
     private String user2_role;
 
     private String pwd;
+
+    public STransformationParameters() {
+
+    }
+
     public String getUser1_role() {
         return user1_role;
     }

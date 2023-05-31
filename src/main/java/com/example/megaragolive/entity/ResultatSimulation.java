@@ -1,6 +1,6 @@
 package com.example.megaragolive.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.io.File;
 import java.util.Date;
@@ -10,7 +10,8 @@ import java.util.Date;
 public class ResultatSimulation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE2")
+    @SequenceGenerator(name="SEQUENCE2", sequenceName="SEQUENCE2", allocationSize=1)
     private Long id;
     private String rapport;
     private File script;
